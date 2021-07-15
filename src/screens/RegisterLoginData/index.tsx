@@ -28,6 +28,8 @@ const schema = Yup.object().shape({
   password: Yup.string().required('Senha é obrigatória!'),
 })
 
+const passKey = '@passmanager:logins'
+
 export function RegisterLoginData() {
   const {
     control,
@@ -45,6 +47,12 @@ export function RegisterLoginData() {
     }
 
     // Save data on AsyncStorage
+    const response = await AsyncStorage.getItem(passKey)
+    const lista = response ? JSON.parse(response) : []
+
+    const newLista = [...lista, newLoginData]
+  
+    await AsyncStorage.setItem(passKey, JSON.stringify(newLista))
   }
 
   return (
@@ -60,9 +68,7 @@ export function RegisterLoginData() {
           <Input
             title="Título"
             name="title"
-            error={
-              // message error here
-            }
+            error={ 'Título é obrigatório!' }            
             control={control}
             placeholder="Escreva o título aqui"
             autoCapitalize="sentences"
@@ -71,9 +77,7 @@ export function RegisterLoginData() {
           <Input
             title="Email"
             name="email"
-            error={
-              // message error here
-            }
+            error={ 'Email é obrigatório!' }
             control={control}
             placeholder="Escreva o Email aqui"
             autoCorrect={false}
@@ -83,9 +87,7 @@ export function RegisterLoginData() {
           <Input
             title="Senha"
             name="password"
-            error={
-              // message error here
-            }
+            error={ 'Senha é obrigatória!' }
             control={control}
             secureTextEntry
             placeholder="Escreva a senha aqui"
