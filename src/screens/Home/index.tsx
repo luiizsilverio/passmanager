@@ -30,10 +30,13 @@ export function Home() {
   async function loadData() {
     // Get asyncStorage data, use setSearchListData and setData
     const response = await AsyncStorage.getItem(passKey)
-    const lista = response ? JSON.parse(response) : []
 
-    setSearchListData(lista)
-    setData(lista)
+    if (!response) return
+
+    const lista = JSON.parse(response)
+
+    setSearchListData([...lista])
+    setData([...lista])
   }
 
   useEffect(() => {
@@ -47,8 +50,12 @@ export function Home() {
   function handleFilterLoginData(search: string) {
     // Filter results inside data, save with setSearchListData
     if (search) {
-      const selected = data.filter(item => item.title === search)
-      setSearchListData(selected)
+      const selected = data.filter(item => 
+        item.title.toLowerCase().includes(search.toLowerCase()))
+      setSearchListData([...selected])
+    
+    } else {
+      loadData()
     }
   }
 
